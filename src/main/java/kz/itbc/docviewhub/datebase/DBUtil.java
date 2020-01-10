@@ -14,7 +14,6 @@ public class DBUtil {
             ds.setUrl(BUNDLE.getString("url"));
             ds.setUsername(BUNDLE.getString("username"));
             ds.setPassword(BUNDLE.getString("password"));
-            ds.setDriverClassName(BUNDLE.getString("driver"));
             ds.setMinIdle(Integer.parseInt(BUNDLE.getString("minIdle")));
             ds.setMaxIdle(Integer.parseInt(BUNDLE.getString("maxIdle")));
             ds.setMaxTotal(Integer.parseInt(BUNDLE.getString("maxTotal")));

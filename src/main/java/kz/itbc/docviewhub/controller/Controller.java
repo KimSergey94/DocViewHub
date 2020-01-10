@@ -11,11 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static kz.itbc.docviewhub.constant.AppConstant.EMPTY_STRING;
+
 public class Controller extends HttpServlet {
     private static final Logger ROOT_LOGGER = LogManager.getRootLogger();
 
     @Override
-    public void init() {}
+    public void init() throws ServletException {
+        super.init();
+        System.out.println("Servlet started");
+        ROOT_LOGGER.info("Servlet started");
+    }
 
     public Controller() {
         super();
@@ -24,7 +30,9 @@ public class Controller extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         String reqURI = req.getRequestURI();
-        reqURI = reqURI.replace(req.getContextPath(), "");
+        System.out.println(reqURI);
+        ROOT_LOGGER.info("POST " + reqURI);
+        reqURI = reqURI.replace(req.getContextPath(), EMPTY_STRING);
         ServiceFactory factory = ServiceFactory.getInstance();
         Service service = factory.getService(reqURI);
         try {
@@ -38,7 +46,9 @@ public class Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         String reqURI = req.getRequestURI();
-        reqURI = reqURI.replace(req.getContextPath(), "");
+        System.out.println(reqURI);
+        ROOT_LOGGER.info("GET " + reqURI);
+        reqURI = reqURI.replace(req.getContextPath(), EMPTY_STRING);
         ServiceFactory factory = ServiceFactory.getInstance();
         Service service = factory.getService(reqURI);
         try {
