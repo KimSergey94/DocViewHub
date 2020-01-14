@@ -3,8 +3,7 @@ package kz.itbc.docviewhub.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import static kz.itbc.docviewhub.constant.AppConstant.COMPANIES_URI;
-import static kz.itbc.docviewhub.constant.AppConstant.REGISTRATION_URI;
+import static kz.itbc.docviewhub.constant.AppConstant.*;
 
 public class ServiceFactory {
     private static final Map<String, Service> SERVICE_MAP = new HashMap<>();
@@ -17,6 +16,9 @@ public class ServiceFactory {
     private void init() {
         SERVICE_MAP.put(REGISTRATION_URI, new RegistrationService());
         SERVICE_MAP.put(COMPANIES_URI, new CompaniesService());
+        SERVICE_MAP.put(ADD_COMPANY_PAGE_URI, new AddCompany());
+        SERVICE_MAP.put(RECEIVE_DOCUMENT_PAGE_URI, new ReceiveDocumentService());
+
     }
 
     public static ServiceFactory getInstance() {

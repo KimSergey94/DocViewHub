@@ -4,7 +4,7 @@
     <Resource name="jdbc/DocViewHub" auth="Container"
               driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
               type="javax.sql.DataSource" username="sa" password="80js&amp;78Am@kzsql"
-              url="jdbc:sqlserver://DESKTOP-4E86524:1433;DatabaseName=DocViewHub;integratedSecurity=true;"
+              url="jdbc:sqlserver://DESKTOP-0S8DLNS:1433;DatabaseName=DocViewHub;integratedSecurity=true;"
               minIdle="100" maxIdle = "1000" maxTotal = "1000" initialSize = "1000"/>
 
     <!-- Default set of monitored resources. If one of these changes, the    -->

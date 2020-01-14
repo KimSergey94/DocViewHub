@@ -1,6 +1,7 @@
 package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import org.apache.logging.log4j.LogManager;
@@ -24,15 +25,16 @@ public class CompaniesService  implements Service{
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res){
-        SERVICE_LOGGER.info("1");
         res.setContentType(JSON_CONTENT_TYPE);
         res.setCharacterEncoding(UTF_8_CHARSET);
-        SERVICE_LOGGER.info("2");
+        GsonBuilder builder = new GsonBuilder();
+        builder.excludeFieldsWithoutExposeAnnotation();
+        Gson gson = builder.create();
         try (OutputStream os = res.getOutputStream()){
             List<Company> responseData = new CompanyDAO().getAllCompanies();
             SERVICE_LOGGER.info("3");
             SERVICE_LOGGER.info("size" + responseData.size());
-            String jsonResponseData = new Gson().toJson(responseData);
+            String jsonResponseData = gson.toJson(responseData);
             os.write(jsonResponseData.getBytes(StandardCharsets.UTF_8));
             SERVICE_LOGGER.info("4");
         } catch (Exception e){

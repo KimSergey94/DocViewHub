@@ -3,12 +3,13 @@ package kz.itbc.docviewhub.service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
-import kz.itbc.docviewhub.entity.DocViewHubCompany;
+import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -22,59 +23,65 @@ public class RegistrationService implements Service {
     private static final Logger SERVICE_LOGGER = LogManager.getRootLogger();
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     }
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        Map<Integer, String> message = new HashMap<>();
         String responseMessage;
         int responseType;
         CompanyDAO companyDAO = new CompanyDAO();
-        int companyId;
-        String keyBase64;
-        String serverAddress = getClientIp(req);
         InputStream is = req.getInputStream();
         String jsonRequestData = IOUtils.toString(is, StandardCharsets.UTF_8);
-        if(serverAddress == null){
-            responseType = FAILURE_RESPONSE;
-            responseMessage = "Невозможно определить IP адрес клиента";
-            sendResponse(res, responseType, responseMessage);
-        } else if(jsonRequestData == null || jsonRequestData.isEmpty()){
+        if(jsonRequestData == null || jsonRequestData.isEmpty()){
             responseType = FAILURE_RESPONSE;
             responseMessage = "Сервером не получены регистрационные данные";
             sendResponse(res, responseType, responseMessage);
         } else {
-            Map<Integer, String> requestMap = new Gson().fromJson(jsonRequestData, new TypeToken<Map<Integer, String>>() {
-            }.getType());
-            for (Map.Entry<Integer, String> entry : requestMap.entrySet()) {
-                companyId = entry.getKey();
-                keyBase64 = entry.getValue();
-                DocViewHubCompany docViewHubCompany;
-                try {
-                    docViewHubCompany = companyDAO.getCompanyById(companyId);
-                } catch (CompanyDAOException e){
-                    SERVICE_LOGGER.error(e.getMessage());
-                    responseType = FAILURE_RESPONSE;
-                    responseMessage = "Компания не найдена в системе DocViewHub";
-                    sendResponse(res, responseType, responseMessage);
-                    return;
-                }
-                docViewHubCompany.setPublicKeyBase64(keyBase64);
-                docViewHubCompany.setServerAddress(serverAddress);
-                try {
-                    companyDAO.updateCompany(docViewHubCompany);
-                } catch (CompanyDAOException e){
-                    SERVICE_LOGGER.error(e.getMessage());
-                    responseType = FAILURE_RESPONSE;
-                    responseMessage = "Возникла ошибка. Обратитесь в поддержу DocViewHub";
-                    sendResponse(res, responseType, responseMessage);
-                    return;
-                }
-                responseType = SUCCESS_RESPONSE;
-                responseMessage = "Компания " + docViewHubCompany.getNameRU() + " успешно зарегистрировалась в DocViewHub.";
-                SERVICE_LOGGER.info(responseMessage);
+            Company companyPKey = new Gson().fromJson(jsonRequestData, Company.class);
+            Company company;
+            try {
+                company = companyDAO.getCompanyById(companyPKey.getId());
+            } catch (CompanyDAOException e){
+                SERVICE_LOGGER.error(e.getMessage());
+                responseType = FAILURE_RESPONSE;
+                responseMessage = "Компания не найдена в системе DocViewHub";
                 sendResponse(res, responseType, responseMessage);
+                return;
             }
+            company.setPublicKeyBase64(companyPKey.getPublicKeyBase64());
+            try {
+                companyDAO.updateCompany(company);
+                String serverAddress = company.getServerAddress()+"/DocViewHub/add-public-key";
+
+               /* HttpsURLConnection connection = null;
+                try {
+                    connection = createRequest(stringUrl, jsonRegistrationData);
+                    readResponse(connection);
+                    UTIL_LOGGER.info("DocViewHub: Public key registered");
+                } catch (IOException e) {
+                    UTIL_LOGGER.error(e.getMessage(), e);
+                    throw new DocViewHubException("Public key registration failed");
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }*/
+
+
+
+            } catch (CompanyDAOException e){
+                SERVICE_LOGGER.error(e.getMessage());
+                responseType = FAILURE_RESPONSE;
+                responseMessage = "Возникла ошибка регистрации компании. Обратитесь в поддержу DocViewHub";
+                sendResponse(res, responseType, responseMessage);
+                return;
+            }
+            responseType = SUCCESS_RESPONSE;
+            responseMessage = "Компания " + company.getNameRU() + " успешно зарегистрировалась в DocViewHub.";
+            SERVICE_LOGGER.info(responseMessage);
+            sendResponse(res, responseType, responseMessage);
         }
     }
 
@@ -95,14 +102,5 @@ public class RegistrationService implements Service {
         }
     }
 
-    private String getClientIp(HttpServletRequest request) {
-        String remoteAddr = null;
-        if (request != null) {
-            remoteAddr = request.getHeader(X_FORWARDED_FOR_HEADER);
-            if (remoteAddr == null || remoteAddr.equals(EMPTY_STRING)) {
-                remoteAddr = request.getRemoteAddr();
-            }
-        }
-        return remoteAddr;
-    }
+
 }
