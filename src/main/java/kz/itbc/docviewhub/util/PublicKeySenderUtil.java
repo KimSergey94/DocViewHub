@@ -39,7 +39,7 @@ public class PublicKeySenderUtil extends Thread {
         for (Company company : companies) {
             String jsonRequestData = gson.toJson(this.company);
             System.out.println(jsonRequestData);
-            String serverAddress = company.getServerAddress() + "/DocViewHub/add-public-key";
+            String serverAddress = company.getServerAddress() + "/DocViewHub/update-company";
             HttpsURLConnection connection = null;
             try {
                 connection = ConnectionUtil.createRequest(serverAddress, jsonRequestData);
