@@ -1,9 +1,14 @@
 package kz.itbc.docviewhub.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
 import kz.itbc.docviewhub.datebase.DAO.DocumentQueueDAO;
+import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.entity.DocumentQueue;
+import kz.itbc.docviewhub.exception.CompanyDAOException;
+import kz.itbc.docviewhub.exception.ConnectionUtilException;
 import kz.itbc.docviewhub.exception.DocViewHubQueueException;
 import kz.itbc.docviewhub.exception.DocumentQueueDAOException;
 import org.apache.commons.io.IOUtils;
@@ -11,10 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.net.ssl.HttpsURLConnection;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public final class DocViewHubQueue extends TimerTask {
-    private static final Logger DAO_LOGGER = LogManager.getRootLogger();
+    private static final Logger UTIL_LOGGER = LogManager.getRootLogger();
     public Map<Integer, String> documentQueue = new HashMap<>();
 
     private static DocViewHubQueue single_instance = null;
@@ -43,76 +45,53 @@ public final class DocViewHubQueue extends TimerTask {
 
     @Override
     public void run() {
-        System.out.println("Timer task started at:"+new Date());
+        UTIL_LOGGER.error("Document sending has started at: " + new Date());
         JSONObject json = new JSONObject();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        for(Map.Entry<Integer, String> entry : documentQueue.entrySet()){
+            json.clear();
+            json.put(entry.getKey(), entry.getValue());
+            String jsonRequestData = gson.toJson(json);
+            sendDocumentToClients(jsonRequestData);
+        }
+        UTIL_LOGGER.error("Document sending has finished at: " + new Date());
+    }
+
+    private synchronized void sendDocumentToClients(String json) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        List<Company> companies = null;
+        String jsonRequestData = gson.toJson(json);
+        System.out.println(jsonRequestData);
 
         try {
-            URL url = new URL(null, "http://localhost:8080/DocViewHub_war/senddocument", new sun.net.www.protocol.https.Handler());
+            companies = new CompanyDAO().getAllAvailableCompanies();
+        } catch (CompanyDAOException e) {
+            UTIL_LOGGER.info("Could not get available companies", e);
+        }
+
+        for (Company company : companies) {
+            String serverAddress = company.getServerAddress() + "/DocViewHub/update-company";
             HttpsURLConnection connection = null;
-            connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/octet-stream");
-            OutputStream out = connection.getOutputStream();
-
-            for(Map.Entry<Integer, String> entry : documentQueue.entrySet()){
-                System.out.println(entry.getKey());
-                System.out.println(entry.getValue());
-                System.out.println("**********");
-                json.clear();
-                json.put(entry.getKey(), entry.getValue());
-                out.write(json.toString().getBytes(StandardCharsets.UTF_8));
-                System.out.println("json.toString(): "+json.toString());
+            try {
+                connection = ConnectionUtil.createRequest(serverAddress, jsonRequestData);
+                ConnectionUtil.readResponse(connection);
+                UTIL_LOGGER.info("DocViewHubQueue: Document data is sent to " + company.getNameRU() + " company");
+            } catch (ConnectionUtilException | IOException e) {
+                UTIL_LOGGER.error("No response from the connection", e);
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
-            readResponse(connection);
-        } catch (DocViewHubQueueException e) {
-            DAO_LOGGER.error("IO Exception occurred.", e);
-        } catch (ProtocolException e) {
-            DAO_LOGGER.error("Protocol Exception occurred.", e);
-        } catch (IOException e) {
-            DAO_LOGGER.error("Error reading response.", e);
-        }
-
-
-        System.out.println("Timer task finished at:"+new Date());
-
-    }
-
-
-    private HttpsURLConnection createRequest(String stringUrl, String jsonData) throws IOException {
-        URL url = new URL(null, stringUrl, new sun.net.www.protocol.https.Handler());
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/octet-stream");
-        OutputStream out = connection.getOutputStream();
-        out.write(jsonData.getBytes(StandardCharsets.UTF_8));
-        return connection;
-    }
-    private void readResponse(HttpsURLConnection connection) throws DocViewHubQueueException, IOException {
-        int response = -1;
-        String responseMessage = "";
-        InputStream in = connection.getInputStream();
-        String jsonResponse = IOUtils.toString(in, StandardCharsets.UTF_8.name());
-        if (jsonResponse != null && !jsonResponse.isEmpty()) {
-            Map<Integer, String> responseMap = new Gson().fromJson(jsonResponse, new TypeToken<Map<Integer, String>>() {
-            }.getType());
-            for (Map.Entry<Integer, String> entry : responseMap.entrySet()) {
-                response = entry.getKey();
-                responseMessage = entry.getValue();
+            try {
+                Thread.sleep(2 * 1000);
+            } catch (InterruptedException e){
+                UTIL_LOGGER.error(e.getMessage(), e);
             }
         }
-        if (response == 0) {
-            throw new DocViewHubQueueException(responseMessage);
-        } else if (response == -1) {
-            throw new DocViewHubQueueException("No response");
-        }
     }
-
-
-
 
     synchronized public void addDocumentToQueue(DocumentQueue documentQueue){
         this.documentQueue.put(documentQueue.getId_DocumentQueue(), documentQueue.getJsonData());
@@ -134,7 +113,7 @@ public final class DocViewHubQueue extends TimerTask {
                 System.out.println("TEST: "+document.getId_DocumentQueue()+", "+document.getJsonData());
             }
         } catch (DocumentQueueDAOException e) {
-            DAO_LOGGER.error("Error: Documents were not successfully received.", e);
+            UTIL_LOGGER.error("Error: Documents were not successfully received.", e);
         }
     }
 

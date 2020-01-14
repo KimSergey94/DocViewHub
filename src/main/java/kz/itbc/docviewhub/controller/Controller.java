@@ -27,22 +27,9 @@ public class Controller extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        /*try {
-            DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
-            TimerTask timerClass = docViewHubQueue.;
-            //initDocViewHubSendingTimer(timerClass);
-        } *//*catch (IOException e){
-            ROOT_LOGGER.error(e.getMessage(), e);
-            this.destroy();
-        }*//* catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-        /*catch (DocViewHubException e) {
-            this.destroy();
-        }*/
-        System.out.println("Servlet started");
-
+        DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
+        TimerTask timerClass = docViewHubQueue;
+        initDocumentSendingTimer(timerClass);
         ROOT_LOGGER.info("Servlet started");
     }
 
@@ -80,42 +67,6 @@ public class Controller extends HttpServlet {
             throw new ServletException(e);
         }
     }
-
-
-   /* private DocViewHubQueue documentSending(DocViewHubQueue docViewHubQueue) throws DocViewHubQueueException {
-        try {
-            for(Map.Entry<Integer, String> entry : docViewHubQueue.documentQueue.entrySet()){
-
-            }
-        }
-    }*/
-
-
-
-    /*private DocViewHubQueue initDocViewHubQueue(DocViewHubQueue docViewHubQueue) throws DocViewHubQueueException {
-        try {
-            List<DocumentQueue> documentQueueList = new DocumentQueueDAO().getDocumentQueues();
-            for(DocumentQueue document : documentQueueList){
-                docViewHubQueue.getInstance().put(document.getId_DocumentQueue(), document.getJsonData());
-                System.out.println("TEST: "+document.getId_DocumentQueue()+", "+document.getJsonData());
-            }
-        } catch (DocumentQueueDAOException e) {
-            DAO_LOGGER.error("Error: Documents were not successfully received.", e);
-        }
-
-        Company company;
-        try {
-            company = new CompanyDAO().getCompany();
-        } catch (SQLException e){
-            ROOT_LOGGER.error(e.getMessage(), e);
-            throw new DocViewHubException("Company is null");
-        }
-        if(company == null){
-            throw new DocViewHubException("Company is null");
-        }
-        docViewHubUtil.registerInDocViewHub();
-        return docViewHubUtil;
-    }*/
 
     private void initDocumentSendingTimer(TimerTask timerClass){
         Timer timer = new Timer();
