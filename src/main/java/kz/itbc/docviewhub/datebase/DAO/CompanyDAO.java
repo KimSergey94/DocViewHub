@@ -70,6 +70,8 @@ public class CompanyDAO {
     public void updateCompany(Company company) throws CompanyDAOException {
         try (Connection connection = CONNECTION.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COMPANY_SQL_QUERY)) {
+            System.out.println(company.getPublicKeyBase64());
+            System.out.println(company.getId());
             preparedStatement.setString(1, company.getPublicKeyBase64());
             preparedStatement.setInt(2, company.getId());
             preparedStatement.executeUpdate();
@@ -88,10 +90,25 @@ public class CompanyDAO {
                 companies.add(initializeCompany(resultSet));
             }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
             e.printStackTrace();
             DAO_LOGGER.error(e.getMessage(), e);
             throw new CompanyDAOException("CompanyDAO: Cannot get companies");
+        }
+        return companies;
+    }
+
+    public List<Company> getAllAvailableCompanies() throws CompanyDAOException{
+        List<Company> companies = new ArrayList<>();
+        try (Connection connection = CONNECTION.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_AVAILABLE_COMPANIES_SQL_QUERY)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                companies.add(initializeCompany(resultSet));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            DAO_LOGGER.error(e.getMessage(), e);
+            throw new CompanyDAOException("CompanyDAO: Could not get available companies");
         }
         return companies;
     }

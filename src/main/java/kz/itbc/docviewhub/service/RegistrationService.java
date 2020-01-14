@@ -1,15 +1,14 @@
 package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
+import kz.itbc.docviewhub.util.PublicKeySenderUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -28,7 +27,6 @@ public class RegistrationService implements Service {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        Map<Integer, String> message = new HashMap<>();
         String responseMessage;
         int responseType;
         CompanyDAO companyDAO = new CompanyDAO();
@@ -53,23 +51,8 @@ public class RegistrationService implements Service {
             company.setPublicKeyBase64(companyPKey.getPublicKeyBase64());
             try {
                 companyDAO.updateCompany(company);
-                String serverAddress = company.getServerAddress()+"/DocViewHub/add-public-key";
-
-               /* HttpsURLConnection connection = null;
-                try {
-                    connection = createRequest(stringUrl, jsonRegistrationData);
-                    readResponse(connection);
-                    UTIL_LOGGER.info("DocViewHub: Public key registered");
-                } catch (IOException e) {
-                    UTIL_LOGGER.error(e.getMessage(), e);
-                    throw new DocViewHubException("Public key registration failed");
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }*/
-
-
+                Thread thread = new PublicKeySenderUtil(company);
+                thread.start();
 
             } catch (CompanyDAOException e){
                 SERVICE_LOGGER.error(e.getMessage());
@@ -88,8 +71,6 @@ public class RegistrationService implements Service {
     private void sendResponse(HttpServletResponse res, int responseType, String responseMessage){
         Map<Integer, String> responseData = new HashMap<>();
         responseData.put(responseType, responseMessage);
-        System.out.println(responseType);
-        System.out.println(responseMessage);
         res.setContentType(JSON_CONTENT_TYPE);
         res.setCharacterEncoding(UTF_8_CHARSET);
         try (OutputStream os = res.getOutputStream()){
@@ -101,6 +82,4 @@ public class RegistrationService implements Service {
             SERVICE_LOGGER.error(e.getMessage(), e);
         }
     }
-
-
 }

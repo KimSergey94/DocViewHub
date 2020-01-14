@@ -32,13 +32,9 @@ public class CompaniesService  implements Service{
         Gson gson = builder.create();
         try (OutputStream os = res.getOutputStream()){
             List<Company> responseData = new CompanyDAO().getAllCompanies();
-            SERVICE_LOGGER.info("3");
-            SERVICE_LOGGER.info("size" + responseData.size());
             String jsonResponseData = gson.toJson(responseData);
             os.write(jsonResponseData.getBytes(StandardCharsets.UTF_8));
-            SERVICE_LOGGER.info("4");
         } catch (Exception e){
-            SERVICE_LOGGER.info("5");
             SERVICE_LOGGER.error(e.getMessage(), e);
         }
     }
