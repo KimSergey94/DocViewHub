@@ -53,18 +53,15 @@ public final class DocViewHubQueue extends TimerTask {
             json.clear();
             json.put(entry.getKey(), entry.getValue());
             String jsonRequestData = gson.toJson(json);
-            sendDocumentToClients(jsonRequestData);
+            Map<Integer, String> mapFromJson = gson.fromJson(jsonRequestData, new TypeToken<Map<Integer, String>>() {}.getType());
+            String jsonData = gson.toJson(mapFromJson);
+            sendDocumentToClients(jsonData);
         }
         UTIL_LOGGER.error("Document sending has finished at: " + new Date());
     }
 
     private synchronized void sendDocumentToClients(String json) {
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
         List<Company> companies = null;
-        String jsonRequestData = gson.toJson(json);
-        System.out.println(jsonRequestData);
-
         try {
             companies = new CompanyDAO().getAllAvailableCompanies();
         } catch (CompanyDAOException e) {
@@ -72,10 +69,10 @@ public final class DocViewHubQueue extends TimerTask {
         }
 
         for (Company company : companies) {
-            String serverAddress = company.getServerAddress() + "/DocViewHub/update-company";
+            String serverAddress = company.getServerAddress() + "/DocViewHub/send";
             HttpsURLConnection connection = null;
             try {
-                connection = ConnectionUtil.createRequest(serverAddress, jsonRequestData);
+                connection = ConnectionUtil.createRequest(serverAddress, json);
                 ConnectionUtil.readResponse(connection);
                 UTIL_LOGGER.info("DocViewHubQueue: Document data is sent to " + company.getNameRU() + " company");
             } catch (ConnectionUtilException | IOException e) {
@@ -95,13 +92,48 @@ public final class DocViewHubQueue extends TimerTask {
 
     synchronized public void addDocumentToQueue(DocumentQueue documentQueue){
         this.documentQueue.put(documentQueue.getId_DocumentQueue(), documentQueue.getJsonData());
-
-        System.out.println("8888:"+documentQueue.getId_DocumentQueue());
+        sendDocumentToClient(documentQueue);
         for(Map.Entry<Integer, String> entry : this.documentQueue.entrySet()){
             System.out.println("key-"+entry.getKey());
             System.out.println("val-"+entry.getValue());
             System.out.println("********123**");
         }
+    }
+    private synchronized void sendDocumentToClient(DocumentQueue documentQueue) {
+        Company senderCompany = null;
+        Company recipientCompany = null;
+        try {
+            senderCompany = new CompanyDAO().getCompanyById(documentQueue.getSenderCompany().getId());
+        } catch (CompanyDAOException e) {
+            UTIL_LOGGER.info("Could not find the sender company", e);
+        }
+        try {
+            recipientCompany = new CompanyDAO().getCompanyById(documentQueue.getRecipientCompany().getId());
+        } catch (CompanyDAOException e) {
+            UTIL_LOGGER.info("Could not find the recipient company", e);
+        }
+
+        if(senderCompany != null && recipientCompany != null){
+            String serverAddress = recipientCompany.getServerAddress() + "/DocViewHub/send";
+            HttpsURLConnection connection = null;
+            try {
+                connection = ConnectionUtil.createRequest(serverAddress, documentQueue.getJsonData());
+                ConnectionUtil.readResponse(connection);
+                UTIL_LOGGER.info("DocViewHubQueue: Document data is sent to " + recipientCompany.getNameRU() + " senderCompany");
+            } catch (ConnectionUtilException | IOException e) {
+                UTIL_LOGGER.error("No response from the connection", e);
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+            try {
+                Thread.sleep(2 * 1000);
+            } catch (InterruptedException e){
+                UTIL_LOGGER.error(e.getMessage(), e);
+            }
+        }
+
     }
 
     private void getDocumentsFromTable() {
@@ -110,7 +142,6 @@ public final class DocViewHubQueue extends TimerTask {
             documentQueueList = new DocumentQueueDAO().getDocumentQueues();
             for(DocumentQueue document : documentQueueList){
                 documentQueue.put(document.getId_DocumentQueue(), document.getJsonData());
-                System.out.println("TEST: "+document.getId_DocumentQueue()+", "+document.getJsonData());
             }
         } catch (DocumentQueueDAOException e) {
             UTIL_LOGGER.error("Error: Documents were not successfully received.", e);

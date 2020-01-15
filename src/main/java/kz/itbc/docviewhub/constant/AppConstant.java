@@ -14,6 +14,12 @@ public class AppConstant {
     public static final String ERROR_ATTRIBUTE = "error";
     public static final String RECEIVED_DOCUMENT_JSON_ATTRIBUTE = "receivedDocument";
 
+    public static final String NAME_RU_PARAMETER = "name_ru";
+    public static final String NAME_KZ_PARAMETER = "name_KZ";
+    public static final String BIN_PARAMETER = "bin";
+    public static final String GOV_ORG_NUM_PARAMETER = "gov_org_num";
+    public static final String SERVER_ADDRESS_PARAMETER = "server_address";
+
     public static final String ADD_COMPANY_PAGE_URI = "/addcompany";
     public static final String RECEIVE_DOCUMENT_PAGE_URI = "/senddocument";
 

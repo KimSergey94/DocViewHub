@@ -70,14 +70,27 @@ public class CompanyDAO {
     public void updateCompany(Company company) throws CompanyDAOException {
         try (Connection connection = CONNECTION.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COMPANY_SQL_QUERY)) {
-            System.out.println(company.getPublicKeyBase64());
-            System.out.println(company.getId());
             preparedStatement.setString(1, company.getPublicKeyBase64());
             preparedStatement.setInt(2, company.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e){
             DAO_LOGGER.error(e.getMessage(), e);
-            throw new CompanyDAOException("CompanyDAO: Cannot update company with ID = " + company.getId());
+            throw new CompanyDAOException("CompanyDAO: Could not update the company with ID = " + company.getId());
+        }
+    }
+
+    public void addCompany(Company company) throws CompanyDAOException {
+        try (Connection connection = CONNECTION.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(ADD_COMPANY_SQL_QUERY)) {
+            preparedStatement.setString(1, company.getNameRU());
+            preparedStatement.setString(2, company.getNameKZ());
+            preparedStatement.setString(3, company.getBin());
+            preparedStatement.setString(4, company.getGovOrgNumber());
+            preparedStatement.setString(5, company.getServerAddress());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            DAO_LOGGER.error(e.getMessage(), e);
+            throw new CompanyDAOException("CompanyDAO: Could not insert the company to database.");
         }
     }
 
