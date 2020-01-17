@@ -10,9 +10,27 @@ public class DocumentQueue {
     private Timestamp receiveDate;
     private Timestamp sendDate;
     private DocumentStatus documentStatus;
+    private int id_ClientDocumentQueue;
+    private boolean flagDeleted;
+
+    public boolean isFlagDeleted() {
+        return flagDeleted;
+    }
+
+    public void setFlagDeleted(boolean flagDeleted) {
+        this.flagDeleted = flagDeleted;
+    }
+
+    public int getId_ClientDocumentQueue() {
+        return id_ClientDocumentQueue;
+    }
+
+    public void setId_ClientDocumentQueue(int id_ClientDocumentQueue) {
+        this.id_ClientDocumentQueue = id_ClientDocumentQueue;
+    }
 
     public DocumentQueue(int id_DocumentQueue, Company senderCompany, Company recipientCompany, String jsonData,
-                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus){
+                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus, int id_ClientDocumentQueue, boolean flagDeleted){
         this.id_DocumentQueue = id_DocumentQueue;
         this.setSenderCompany(senderCompany);
         this.setRecipientCompany(recipientCompany);
@@ -20,6 +38,8 @@ public class DocumentQueue {
         this.receiveDate = receiveDate;
         this.sendDate = sendDate;
         this.documentStatus = documentStatus;
+        this.id_ClientDocumentQueue = id_ClientDocumentQueue;
+        this.flagDeleted = flagDeleted;
     }
     public DocumentQueue(){}
 

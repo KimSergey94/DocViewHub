@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
+import kz.itbc.docviewhub.util.ConnectionUtil;
 import kz.itbc.docviewhub.util.PublicKeySenderUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +36,7 @@ public class RegistrationService implements Service {
         if(jsonRequestData == null || jsonRequestData.isEmpty()){
             responseType = FAILURE_RESPONSE;
             responseMessage = "Сервером не получены регистрационные данные";
-            sendResponse(res, responseType, responseMessage);
+            ConnectionUtil.sendResponse(res, responseType, responseMessage);
         } else {
             Company companyPKey = new Gson().fromJson(jsonRequestData, Company.class);
             Company company;
@@ -45,7 +46,7 @@ public class RegistrationService implements Service {
                 SERVICE_LOGGER.error(e.getMessage());
                 responseType = FAILURE_RESPONSE;
                 responseMessage = "Компания не найдена в системе DocViewHub";
-                sendResponse(res, responseType, responseMessage);
+                ConnectionUtil.sendResponse(res, responseType, responseMessage);
                 return;
             }
             company.setPublicKeyBase64(companyPKey.getPublicKeyBase64());
@@ -58,28 +59,14 @@ public class RegistrationService implements Service {
                 SERVICE_LOGGER.error(e.getMessage());
                 responseType = FAILURE_RESPONSE;
                 responseMessage = "Возникла ошибка регистрации компании. Обратитесь в поддержу DocViewHub";
-                sendResponse(res, responseType, responseMessage);
+                ConnectionUtil.sendResponse(res, responseType, responseMessage);
                 return;
             }
             responseType = SUCCESS_RESPONSE;
             responseMessage = "Компания " + company.getNameRU() + " успешно зарегистрировалась в DocViewHub.";
             SERVICE_LOGGER.info(responseMessage);
-            sendResponse(res, responseType, responseMessage);
+            ConnectionUtil.sendResponse(res, responseType, responseMessage);
         }
     }
 
-    private void sendResponse(HttpServletResponse res, int responseType, String responseMessage){
-        Map<Integer, String> responseData = new HashMap<>();
-        responseData.put(responseType, responseMessage);
-        res.setContentType(JSON_CONTENT_TYPE);
-        res.setCharacterEncoding(UTF_8_CHARSET);
-        try (OutputStream os = res.getOutputStream()){
-            String jsonResponseData = new Gson().toJson(responseData);
-            os.write(jsonResponseData.getBytes(StandardCharsets.UTF_8));
-            os.close();
-            SERVICE_LOGGER.info(responseType + " " + responseMessage);
-        } catch (IOException e){
-            SERVICE_LOGGER.error(e.getMessage(), e);
-        }
-    }
 }

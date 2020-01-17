@@ -23,13 +23,15 @@ import static kz.itbc.docviewhub.constant.AppConstant.EMPTY_STRING;
 @MultipartConfig(fileSizeThreshold=1024*1024*10, maxFileSize=1024*1024*100, maxRequestSize=1024*1024*150)
 public class Controller extends HttpServlet {
     private static final Logger ROOT_LOGGER = LogManager.getRootLogger();
+    private static Timer timer = new Timer();
+
 
     @Override
     public void init() throws ServletException {
         super.init();
-        DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
+        /*DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
         TimerTask timerClass = docViewHubQueue;
-        initDocumentSendingTimer(timerClass);
+        initDocumentSendingTimer(timerClass);*/
         ROOT_LOGGER.info("Servlet started");
     }
 
@@ -69,8 +71,14 @@ public class Controller extends HttpServlet {
     }
 
     private void initDocumentSendingTimer(TimerTask timerClass){
-        Timer timer = new Timer();
         timer.scheduleAtFixedRate(timerClass, 0, 1 * 30 * 1000);
     }
+
+    public void destroy(){
+        super.destroy();
+        timer.cancel();
+        timer.purge();
+    }
+
 
 }

@@ -40,6 +40,12 @@ public class DocumentQueueDAO {
         return documentQueue;
     }
 
+    /**CHECK the fields used to get the new added doc
+     *
+     * @param senderCompanyID
+     * @param recipientCompanyID
+     * @param jsonData
+     */
     public DocumentQueue getDocumentQueueIdByTimestampAndCompaniesIDs(int senderCompanyID, int recipientCompanyID, String jsonData) throws DocumentQueueDAOException {
         DocumentQueue documentQueue = null;
         try (Connection connection = CONNECTION.getConnection();
@@ -70,6 +76,8 @@ public class DocumentQueueDAO {
             preparedStatement.setString(3, documentQueue.getJsonData());
             preparedStatement.setTimestamp(4, documentQueue.getReceiveDate());
             preparedStatement.setInt(5, documentQueue.getDocumentStatus().getId_DocumentStatus());
+            preparedStatement.setInt(6, documentQueue.getId_ClientDocumentQueue());
+            preparedStatement.setBoolean(7, documentQueue.isFlagDeleted());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DAO_LOGGER.error("DocumentQueueDAO: Error while inserting a document to the table.", e);
@@ -98,6 +106,8 @@ public class DocumentQueueDAO {
         int senderCompanyID = resultSet.getInt("ID_SenderCompany");
         int addresseeCompanyID = resultSet.getInt("ID_RecipientCompany");
         int documentStatusID = resultSet.getInt("ID_DocumentStatus");
+        int clientDocumentQueueID = resultSet.getInt("ID_ClientDocumentQueue");
+        boolean flagDeleted = resultSet.getBoolean("FlagDeleted");
         Company senderCompany = null;
         Company addresseeCompany = null;
         DocumentStatus documentStatus = null;
@@ -114,7 +124,7 @@ public class DocumentQueueDAO {
         } catch (CompanyDAOException e) {
             DAO_LOGGER.error("Error occurred while getting the company with id = "+addresseeCompanyID, e);
         }
-        return new DocumentQueue(id, senderCompany, addresseeCompany, jsonData, receiveDate, sendDate, documentStatus);
+        return new DocumentQueue(id, senderCompany, addresseeCompany, jsonData, receiveDate, sendDate, documentStatus, clientDocumentQueueID, flagDeleted);
     }
 
 

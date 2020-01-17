@@ -18,6 +18,10 @@ public class ServiceFactory {
         SERVICE_MAP.put(COMPANIES_URI, new CompaniesService());
         SERVICE_MAP.put(ADD_COMPANY_PAGE_URI, new AddCompany());
         SERVICE_MAP.put(RECEIVE_DOCUMENT_PAGE_URI, new ReceiveDocumentService());
+        SERVICE_MAP.put(GET_COMPANY_INFO_AJAX_PAGE_URI, new AJAXGetCompanyInfoService());
+        SERVICE_MAP.put(DELETE_COMPANY_PAGE_URI, new DeleteCompanyService());
+        SERVICE_MAP.put(EDIT_COMPANY_PAGE_URI, new EditCompanyService());
+
 
     }
 

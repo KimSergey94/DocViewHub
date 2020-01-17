@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static kz.itbc.docviewhub.constant.AppConstant.*;
 import static kz.itbc.docviewhub.constant.DaoConstant.*;
 
 public class CompanyDAO {
@@ -32,6 +33,28 @@ public class CompanyDAO {
         }
         if (company == null){
             throw new CompanyDAOException("CompanyDAO: Company with ID = " + id + " not found");
+        }
+        return company;
+    }
+
+    public Company getCompanyID(Company company) throws CompanyDAOException {
+        try (Connection connection = CONNECTION.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPANY_ID_SQL_QUERY)) {
+            preparedStatement.setString(1, company.getNameRU());
+            preparedStatement.setString(2, company.getNameKZ());
+            preparedStatement.setString(3, company.getBin());
+            preparedStatement.setString(4, company.getGovOrgNumber());
+            preparedStatement.setString(5, company.getServerAddress());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                company = initializeCompany(resultSet);
+            }
+        } catch (SQLException e){
+            DAO_LOGGER.error(e.getMessage(), e);
+            throw new CompanyDAOException("CompanyDAO: Error occurred while getting the company with the provided data");
+        }
+        if (company == null){
+            throw new CompanyDAOException("CompanyDAO: Company with the provided has not been found");
         }
         return company;
     }
@@ -87,10 +110,39 @@ public class CompanyDAO {
             preparedStatement.setString(3, company.getBin());
             preparedStatement.setString(4, company.getGovOrgNumber());
             preparedStatement.setString(5, company.getServerAddress());
+            preparedStatement.setBoolean(6, company.isDeleted());
             preparedStatement.executeUpdate();
         } catch (SQLException e){
             DAO_LOGGER.error(e.getMessage(), e);
             throw new CompanyDAOException("CompanyDAO: Could not insert the company to database.");
+        }
+    }
+
+    public void deleteCompany(Company company) throws CompanyDAOException {
+        try (Connection connection = CONNECTION.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COMPANY_SQL_QUERY)) {
+            preparedStatement.setBoolean(1, company.isDeleted());
+            preparedStatement.setInt(2, company.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            DAO_LOGGER.error(e.getMessage(), e);
+            throw new CompanyDAOException("CompanyDAO: Could not delete the company with ID = " + company.getId());
+        }
+    }
+
+    public void editCompany(Company company) throws CompanyDAOException {
+        try (Connection connection = CONNECTION.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(EDIT_COMPANY_SQL_QUERY)) {
+            preparedStatement.setString(1, company.getNameRU());
+            preparedStatement.setString(2, company.getNameKZ());
+            preparedStatement.setString(3, company.getBin());
+            preparedStatement.setString(4, company.getGovOrgNumber());
+            preparedStatement.setString(5, company.getServerAddress());
+            preparedStatement.setInt(6, company.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e){
+            DAO_LOGGER.error(e.getMessage(), e);
+            throw new CompanyDAOException("CompanyDAO: Could not edit the company with ID = " + company.getId());
         }
     }
 
