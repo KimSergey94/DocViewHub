@@ -55,13 +55,13 @@ public class DeleteCompanyService implements Service {
             company.setDeleted(true);
             companyDAO.deleteCompany(company);
             json.put(ID_COMPANY_ATTRIBUTE, companyID);
+            String jsonRequestData = gson.toJson(json);
             try {
                 companies = new CompanyDAO().getAllAvailableCompanies();
             } catch (CompanyDAOException e) {
                 SERVICE_LOGGER.info("Could not get available companies", e);
             }
             for (Company client : companies) {
-                String jsonRequestData = gson.toJson(json);
                 System.out.println("jsonRequestData to remove-company: " + jsonRequestData);
                 String serverAddress = client.getServerAddress() + "/DocViewHub/remove-company";
                 HttpsURLConnection connection = null;
@@ -82,6 +82,8 @@ public class DeleteCompanyService implements Service {
                     SERVICE_LOGGER.error(e.getMessage(), e);
                 }
             }
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher(DELETE_COMPANY_PAGE_JSP);
+            requestDispatcher.forward(req, res);
         } catch (CompanyDAOException e) {
             SERVICE_LOGGER.error("Error occurred while deleting the company with ID = " + companyID, e);
         }

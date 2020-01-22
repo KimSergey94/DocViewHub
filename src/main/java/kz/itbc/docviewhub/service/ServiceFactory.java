@@ -21,6 +21,9 @@ public class ServiceFactory {
         SERVICE_MAP.put(GET_COMPANY_INFO_AJAX_PAGE_URI, new AJAXGetCompanyInfoService());
         SERVICE_MAP.put(DELETE_COMPANY_PAGE_URI, new DeleteCompanyService());
         SERVICE_MAP.put(EDIT_COMPANY_PAGE_URI, new EditCompanyService());
+        SERVICE_MAP.put(MAIN_PAGE_URI, new MainService());
+        SERVICE_MAP.put(LOGIN_PAGE_URI, new LoginService());
+        SERVICE_MAP.put(TEST_PAGE_URI, new TestUserHashPasswordService());
 
 
     }

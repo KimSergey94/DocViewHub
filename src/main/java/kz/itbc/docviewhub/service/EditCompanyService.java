@@ -52,6 +52,8 @@ public class EditCompanyService implements Service {
             company.setGovOrgNumber(gov_org_num);
             company.setServerAddress(server_address);
             companyDAO.editCompany(company);
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher(EDIT_COMPANY_PAGE_JSP);
+            requestDispatcher.forward(req, res);
         } catch (CompanyDAOException e) {
             SERVICE_LOGGER.error("Error occurred while deleting the company with ID = " + companyID, e);
         }

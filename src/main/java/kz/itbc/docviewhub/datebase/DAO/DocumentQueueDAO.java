@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static kz.itbc.docviewhub.constant.DaoConstant.*;
@@ -78,6 +79,7 @@ public class DocumentQueueDAO {
             preparedStatement.setInt(5, documentQueue.getDocumentStatus().getId_DocumentStatus());
             preparedStatement.setInt(6, documentQueue.getId_ClientDocumentQueue());
             preparedStatement.setBoolean(7, documentQueue.isFlagDeleted());
+            preparedStatement.setString(8, documentQueue.getAes());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DAO_LOGGER.error("DocumentQueueDAO: Error while inserting a document to the table.", e);
@@ -85,13 +87,13 @@ public class DocumentQueueDAO {
         }
     }
 
-    public void updateDocumentQueueSendDate(DocumentQueue documentQueue) throws DocumentQueueDAOException{
+    public void updateDocumentQueueStatusAndSendDate(DocumentQueue documentQueue) throws DocumentQueueDAOException{
         try (Connection connection = CONNECTION.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_DOCUMENT_QUEUE_SQL_QUERY)) {
             preparedStatement.setTimestamp(1, documentQueue.getSendDate());
             preparedStatement.setInt(2, documentQueue.getDocumentStatus().getId_DocumentStatus());
             preparedStatement.setInt(3, documentQueue.getId_DocumentQueue());
-            ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             DAO_LOGGER.error("DocumentQueueDAO: Error while updating a document in the document queue table.", e);
             throw new DocumentQueueDAOException("DocumentQueueDAO: Error while updating a document in the document queue table.");
@@ -108,6 +110,7 @@ public class DocumentQueueDAO {
         int documentStatusID = resultSet.getInt("ID_DocumentStatus");
         int clientDocumentQueueID = resultSet.getInt("ID_ClientDocumentQueue");
         boolean flagDeleted = resultSet.getBoolean("FlagDeleted");
+        String aes = resultSet.getString("AES");
         Company senderCompany = null;
         Company addresseeCompany = null;
         DocumentStatus documentStatus = null;
@@ -124,7 +127,7 @@ public class DocumentQueueDAO {
         } catch (CompanyDAOException e) {
             DAO_LOGGER.error("Error occurred while getting the company with id = "+addresseeCompanyID, e);
         }
-        return new DocumentQueue(id, senderCompany, addresseeCompany, jsonData, receiveDate, sendDate, documentStatus, clientDocumentQueueID, flagDeleted);
+        return new DocumentQueue(id, senderCompany, addresseeCompany, jsonData, receiveDate, sendDate, documentStatus, clientDocumentQueueID, flagDeleted, aes);
     }
 
 

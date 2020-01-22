@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Built-By: User
+Created-By: IntelliJ IDEA
+Build-Jdk: 1.8.0_231
+Class-Path: C:\Users\Рауан\IdeaProjects\DocViewHub\target\classes
+Class-Path: C:\Users\Рауан\IdeaProjects\DocViewHub\src
+Class-Path: C:\Apache Software Foundation\Tomcat 9.0\webapps\DocViewHub_war\WEB-INF\classes
+

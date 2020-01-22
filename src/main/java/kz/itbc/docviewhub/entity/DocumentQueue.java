@@ -12,6 +12,15 @@ public class DocumentQueue {
     private DocumentStatus documentStatus;
     private int id_ClientDocumentQueue;
     private boolean flagDeleted;
+    private String aes;
+
+    public String getAes() {
+        return aes;
+    }
+
+    public void setAes(String aes) {
+        this.aes = aes;
+    }
 
     public boolean isFlagDeleted() {
         return flagDeleted;
@@ -30,7 +39,8 @@ public class DocumentQueue {
     }
 
     public DocumentQueue(int id_DocumentQueue, Company senderCompany, Company recipientCompany, String jsonData,
-                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus, int id_ClientDocumentQueue, boolean flagDeleted){
+                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus, int id_ClientDocumentQueue,
+                         boolean flagDeleted, String aes){
         this.id_DocumentQueue = id_DocumentQueue;
         this.setSenderCompany(senderCompany);
         this.setRecipientCompany(recipientCompany);
@@ -40,6 +50,7 @@ public class DocumentQueue {
         this.documentStatus = documentStatus;
         this.id_ClientDocumentQueue = id_ClientDocumentQueue;
         this.flagDeleted = flagDeleted;
+        this.aes = aes;
     }
     public DocumentQueue(){}
 

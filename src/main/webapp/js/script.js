@@ -36,3 +36,34 @@ function getCompanyInfo(element) {
     });
 }
 
+/*
+$(document).on('click', '#sign-in', function (){
+    var login = document.getElementById("login");
+    var password = document.getElementById("password");
+    if(login !== null){
+        login = login.value;
+        if(password !== null){
+            password = password.value;
+            $.ajax({
+                type: "POST",
+                url:"login",
+                data: 'login='+login+'&password='+password,
+                success: function(data) {
+                    $("html").html(data);
+                }
+            });
+        }
+    }
+});
+*/
+$(document).on('click', '#content-button-add-company', function(){
+    window.location = "addcompany";
+});
+$(document).on('click', '#content-button-edit-company', function(){
+    window.location = "editcompany";
+});
+$(document).on('click', '#content-button-delete-company', function(){
+    window.location = "deletecompany";
+});
+
+
