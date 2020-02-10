@@ -1,0 +1,121 @@
+#company-data-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    height: 100px;
+    width: 500px;
+    flex-direction: row;
+}
+.company-data {
+    height: 44px;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+}
+.company-data > div, .company-data-to-delete > div, .company-data-to-edit > div {
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+}
+.company-data > div > input, .company-data-to-delete > div > input, .company-data-to-edit > div > input {
+    margin-left: 21px;
+    width: 300px;
+    margin-top: 3px;
+}
+.company-data > div > li, .company-data-to-delete > div > li, .company-data-to-edit > div > li {
+    list-style: none;
+}
+.company-data > div >li, .company-data-to-delete > div > li, .company-data-to-edit > div > li {
+    width: 200px;
+}
+.send-button {
+    margin: auto;
+    margin-top: 18px;
+}
+.company-data-to-delete {
+    height: 21px;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: none;
+    -ms-align-items: center;
+    align-items: center;
+    margin-top: 15px;
+}
+.company-data-to-edit {
+    height: 44px;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: none;
+    -ms-align-items: center;
+    align-items: center;
+    margin-top: 15px;
+}
+.delete-button {
+    display: none;
+    margin: auto;
+    margin-top: 18px;
+}
+.edit-button {
+    display: none;
+    margin: auto;
+    margin-top: 18px;
+}
+.log-form > div > li {
+    display: block;
+    margin-top: 6px;
+    margin-left: 24px;
+}
+#sign-in {
+    margin: 6px;
+    margin-left: 48px;
+}
+.error-message {
+    color: red;
+}
+.content-buttons {
+    height: 44px;
+    width: 100%;
+    background-color: #f3f3f3;
+}
+.content-buttons {
+    box-sizing: border-box;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    -ms-flex-direction: row;
+    -o-flex-direction: row;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-right: 10px;
+}
+.content-buttons > div {
+    height: 44px;
+    background-color: #f3f3f3;
+    height: 100%;
+    padding: 0 15px;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    -ms-align-items: center;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 0;
+}
+li {
+    list-style: none;
+}
+.content-buttons > div:hover {
+    cursor: pointer;
+    background-color: #e6e3e3;
+}
