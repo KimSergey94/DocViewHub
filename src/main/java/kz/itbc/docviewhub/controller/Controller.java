@@ -1,17 +1,11 @@
 package kz.itbc.docviewhub.controller;
 
-import kz.itbc.docviewhub.datebase.DAO.DocumentQueueDAO;
-import kz.itbc.docviewhub.entity.DocumentQueue;
-import kz.itbc.docviewhub.exception.DocViewHubQueueException;
-import kz.itbc.docviewhub.exception.DocumentQueueDAOException;
 import kz.itbc.docviewhub.service.Service;
 import kz.itbc.docviewhub.service.ServiceFactory;
 import kz.itbc.docviewhub.util.DocViewHubQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +14,6 @@ import java.util.*;
 
 import static kz.itbc.docviewhub.constant.AppConstant.EMPTY_STRING;
 
-@MultipartConfig(fileSizeThreshold=1024*1024*10, maxFileSize=1024*1024*100, maxRequestSize=1024*1024*150)
 public class Controller extends HttpServlet {
     private static final Logger ROOT_LOGGER = LogManager.getRootLogger();
     private static Timer timer = new Timer();
@@ -29,9 +22,9 @@ public class Controller extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        /*DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
+        DocViewHubQueue docViewHubQueue = DocViewHubQueue.getInstance();
         TimerTask timerClass = docViewHubQueue;
-        initDocumentSendingTimer(timerClass);*/
+        initDocumentSendingTimer(timerClass);
         ROOT_LOGGER.info("Servlet started");
     }
 
@@ -71,7 +64,7 @@ public class Controller extends HttpServlet {
     }
 
     private void initDocumentSendingTimer(TimerTask timerClass){
-        timer.scheduleAtFixedRate(timerClass, 0, 1 * 30 * 1000);
+        timer.scheduleAtFixedRate(timerClass, 0, 15 * 60 * 1000);
     }
 
     public void destroy(){

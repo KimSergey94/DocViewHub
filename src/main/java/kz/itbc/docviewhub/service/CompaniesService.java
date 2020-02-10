@@ -2,11 +2,10 @@ package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
+import kz.itbc.docviewhub.database.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -20,8 +19,7 @@ public class CompaniesService  implements Service{
     private static final Logger SERVICE_LOGGER = LogManager.getRootLogger();
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) {
-    }
+    public void doGet(HttpServletRequest req, HttpServletResponse res) {}
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res){

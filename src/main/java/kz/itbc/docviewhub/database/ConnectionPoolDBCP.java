@@ -1,9 +1,7 @@
-package kz.itbc.docviewhub.datebase;
+package kz.itbc.docviewhub.database;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -11,7 +9,6 @@ import javax.sql.DataSource;
 public class ConnectionPoolDBCP {
     private static final Logger LOGGER = LogManager.getRootLogger();
     private static DataSource INSTANCE;
-    /*private static final BasicDataSource INSTANCE = DBUtil.getDataSource();*/
 
     static {
         try {

@@ -62,6 +62,9 @@ $(document).on('click', '#content-button-add-company', function(){
 $(document).on('click', '#content-button-edit-company', function(){
     window.location = "editcompany";
 });
+
+
+
 $(document).on('click', '#content-button-delete-company', function(){
     window.location = "deletecompany";
 });

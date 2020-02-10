@@ -1,4 +1,4 @@
-package kz.itbc.docviewhub.datebase;
+package kz.itbc.docviewhub.database;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 

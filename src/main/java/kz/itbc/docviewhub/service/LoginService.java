@@ -1,6 +1,6 @@
 package kz.itbc.docviewhub.service;
 
-import kz.itbc.docviewhub.datebase.DAO.UserDAO;
+import kz.itbc.docviewhub.database.DAO.UserDAO;
 import kz.itbc.docviewhub.entity.User;
 import kz.itbc.docviewhub.exception.UserDAOException;
 import kz.itbc.docviewhub.security.Security;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
 import static kz.itbc.docviewhub.constant.AppConstant.*;
 
 

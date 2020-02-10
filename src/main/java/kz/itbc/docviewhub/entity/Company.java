@@ -22,6 +22,14 @@ public class Company {
     @Expose()
     private boolean isDeleted;
 
+    public Company(String nameRU, String nameKZ, String bin, String govOrgNumber, String serverAddress) {
+        this.nameRU = nameRU;
+        this.nameKZ = nameKZ;
+        this.bin = bin;
+        this.govOrgNumber = govOrgNumber;
+        this.serverAddress = serverAddress;
+    }
+
     public Company(int id, String nameRU, String nameKZ, String bin, String govOrgNumber, String publicKeyBase64, String serverAddress, boolean isDeleted) {
         this.id = id;
         this.nameRU = nameRU;

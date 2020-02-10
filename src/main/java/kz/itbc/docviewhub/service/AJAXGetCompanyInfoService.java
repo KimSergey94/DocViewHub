@@ -1,13 +1,11 @@
 package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
-import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
+import kz.itbc.docviewhub.database.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,14 +18,12 @@ public class AJAXGetCompanyInfoService implements Service {
     private static final Logger SERVICE_LOGGER = LogManager.getRootLogger();
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-
-    }
+    public void doGet(HttpServletRequest req, HttpServletResponse res)  {}
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         Map<String, String> message = new HashMap<>();
-        Company company = new Company();
+        Company company;
         int companyID = Integer.parseInt(req.getParameter(COMPANY_ID_PARAMETER));
         try{
             company = new CompanyDAO().getCompanyById(companyID);

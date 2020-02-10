@@ -1,7 +1,7 @@
 package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
-import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
+import kz.itbc.docviewhub.database.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
 import kz.itbc.docviewhub.util.ConnectionUtil;
@@ -9,13 +9,10 @@ import kz.itbc.docviewhub.util.PublicKeySenderUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import static kz.itbc.docviewhub.constant.AppConstant.*;
 
@@ -23,8 +20,7 @@ public class RegistrationService implements Service {
     private static final Logger SERVICE_LOGGER = LogManager.getRootLogger();
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    }
+    public void doGet(HttpServletRequest req, HttpServletResponse res) {}
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -54,7 +50,6 @@ public class RegistrationService implements Service {
                 companyDAO.updateCompany(company);
                 Thread thread = new PublicKeySenderUtil(company);
                 thread.start();
-
             } catch (CompanyDAOException e){
                 SERVICE_LOGGER.error(e.getMessage());
                 responseType = FAILURE_RESPONSE;
@@ -68,5 +63,4 @@ public class RegistrationService implements Service {
             ConnectionUtil.sendResponse(res, responseType, responseMessage);
         }
     }
-
 }

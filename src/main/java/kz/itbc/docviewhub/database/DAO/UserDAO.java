@@ -1,19 +1,15 @@
-package kz.itbc.docviewhub.datebase.DAO;
+package kz.itbc.docviewhub.database.DAO;
 
-import kz.itbc.docviewhub.datebase.ConnectionPoolDBCP;
-import kz.itbc.docviewhub.entity.Company;
+import kz.itbc.docviewhub.database.ConnectionPoolDBCP;
 import kz.itbc.docviewhub.entity.User;
-import kz.itbc.docviewhub.exception.CompanyDAOException;
 import kz.itbc.docviewhub.exception.UserDAOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import static kz.itbc.docviewhub.constant.DaoConstant.*;
 
 public class UserDAO {

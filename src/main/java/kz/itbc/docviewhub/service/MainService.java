@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import static kz.itbc.docviewhub.constant.AppConstant.MAIN_PAGE_JSP;
 
 public class MainService implements Service {
@@ -16,8 +15,5 @@ public class MainService implements Service {
     }
 
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-
-
-    }
+    public void doPost(HttpServletRequest req, HttpServletResponse res) {}
 }

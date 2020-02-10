@@ -5,7 +5,6 @@ public class AppConstant {
     public static final String COMPANIES_URI = "/companies";
     public static final String JSON_CONTENT_TYPE = "application/json;charset=utf-8";
     public static final String UTF_8_CHARSET = "UTF-8";
-    public static final String X_FORWARDED_FOR_HEADER = "X-FORWARDED-FOR";
     public static final String EMPTY_STRING = "";
     public static final int SUCCESS_RESPONSE = 1;
     public static final int FAILURE_RESPONSE = 0;
@@ -15,15 +14,15 @@ public class AppConstant {
     public static final int INCORRECT_PASSWORD_ERROR = 1001;
 
     //Attributes
-    public static final String MESSAGE_ATTRIBUTE = "message";
+    public static final String MESSAGE_ATTRIBUTE = "Message";
+    public static final String CODE_RESULT_ATTRIBUTE = "CodeResult";
+    public static final String ID_CLIENTDOCUMENTQUEUE_ATTRIBUTE = "ID_ClientDocumentQueue";
     public static final String ERROR_ATTRIBUTE = "error";
     public static final String COMPANIES_ATTRIBUTE = "companies";
     public static final String ID_DOCUMENT_QUEUE_ATTRIBUTE = "ID_DocumentQueue";
     public static final String ID_SENDER_COMPANY_ATTRIBUTE = "ID_SenderCompany";
-    public static final String ID_CLIENTDOCUMENTQUEUE_ATTRIBUTE = "ID_ClientDocumentQueue";
     public static final String ID_RECIPIENT_COMPANY_ATTRIBUTE = "ID_RecipientCompany";
     public static final String JSON_DATA_ATTRIBUTE = "JsonData";
-    public static final String ID_COMPANY_ATTRIBUTE = "ID_Company";
     public static final String AES_ATTRIBUTE = "SymmetricKeyBase64";
     public static final String USER_ATTRIBUTE = "user";
 

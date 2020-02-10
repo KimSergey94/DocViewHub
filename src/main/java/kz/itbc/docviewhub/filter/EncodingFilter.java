@@ -6,7 +6,6 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import static kz.itbc.docviewhub.constant.AppConstant.UTF_8_CHARSET;
 
 public class EncodingFilter extends HttpFilter {

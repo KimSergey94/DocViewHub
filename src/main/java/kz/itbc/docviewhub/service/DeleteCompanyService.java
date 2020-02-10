@@ -1,26 +1,20 @@
 package kz.itbc.docviewhub.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
+import kz.itbc.docviewhub.database.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
 import kz.itbc.docviewhub.exception.ConnectionUtilException;
 import kz.itbc.docviewhub.util.ConnectionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import java.util.*;
 import static kz.itbc.docviewhub.constant.AppConstant.*;
 
 public class DeleteCompanyService implements Service {
@@ -30,9 +24,7 @@ public class DeleteCompanyService implements Service {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
             List<Company> companies = new CompanyDAO().getAllAvailableCompanies();
-            Set<Company> companyHashSet = new HashSet<>(companies);
-
-            req.setAttribute(COMPANIES_ATTRIBUTE, companyHashSet);
+            req.setAttribute(COMPANIES_ATTRIBUTE, companies);
         } catch (CompanyDAOException e) {
             SERVICE_LOGGER.error("Error occurred while retrieving available companies.", e);
         }
@@ -42,27 +34,17 @@ public class DeleteCompanyService implements Service {
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        List<Company> companies = null;
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        JSONObject json = new JSONObject();
+        List<Company> companies;
         int companyID = Integer.parseInt(req.getParameter(COMPANY_ID_PARAMETER));
-        System.out.println("companyID: "+companyID);
-        Company company = new Company();
+        Company company;
         CompanyDAO companyDAO = new CompanyDAO();
         try {
             company = companyDAO.getCompanyById(companyID);
             company.setDeleted(true);
             companyDAO.deleteCompany(company);
-            json.put(ID_COMPANY_ATTRIBUTE, companyID);
-            String jsonRequestData = gson.toJson(json);
-            try {
-                companies = new CompanyDAO().getAllAvailableCompanies();
-            } catch (CompanyDAOException e) {
-                SERVICE_LOGGER.info("Could not get available companies", e);
-            }
+            String jsonRequestData = new Gson().toJson(companyID);
+            companies = new CompanyDAO().getAllAvailableCompanies();
             for (Company client : companies) {
-                System.out.println("jsonRequestData to remove-company: " + jsonRequestData);
                 String serverAddress = client.getServerAddress() + "/DocViewHub/remove-company";
                 HttpsURLConnection connection = null;
                 try {
@@ -77,7 +59,7 @@ public class DeleteCompanyService implements Service {
                     }
                 }
                 try {
-                    Thread.sleep(2 * 1000);
+                    Thread.sleep( 1000);
                 } catch (InterruptedException e){
                     SERVICE_LOGGER.error(e.getMessage(), e);
                 }
@@ -85,7 +67,7 @@ public class DeleteCompanyService implements Service {
             RequestDispatcher requestDispatcher = req.getRequestDispatcher(DELETE_COMPANY_PAGE_JSP);
             requestDispatcher.forward(req, res);
         } catch (CompanyDAOException e) {
-            SERVICE_LOGGER.error("Error occurred while deleting the company with ID = " + companyID, e);
+            SERVICE_LOGGER.error(e.getMessage());
         }
     }
 }

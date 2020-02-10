@@ -10,10 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
     <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
     <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/bootstrap.js"></script>
     <script src="${pageContext.request.contextPath}/js/script.js"></script>
-    <script src="${pageContext.request.contextPath}/js/jquery.maskedinput.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/aes.js"></script>
     <title>Мои файлы</title>
 </head>
 <body >

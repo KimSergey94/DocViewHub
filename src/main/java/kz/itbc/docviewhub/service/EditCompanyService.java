@@ -1,19 +1,16 @@
 package kz.itbc.docviewhub.service;
 
-import kz.itbc.docviewhub.datebase.DAO.CompanyDAO;
+import kz.itbc.docviewhub.database.DAO.CompanyDAO;
 import kz.itbc.docviewhub.entity.Company;
 import kz.itbc.docviewhub.exception.CompanyDAOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static kz.itbc.docviewhub.constant.AppConstant.*;
 
@@ -24,8 +21,7 @@ public class EditCompanyService implements Service {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
             List<Company> companies = new CompanyDAO().getAllAvailableCompanies();
-            Set<Company> companyHashSet = new HashSet<>(companies);
-            req.setAttribute(COMPANIES_ATTRIBUTE, companyHashSet);
+            req.setAttribute(COMPANIES_ATTRIBUTE, companies);
         } catch (CompanyDAOException e) {
             SERVICE_LOGGER.error("Error occurred while retrieving available companies.", e);
         }
@@ -36,8 +32,7 @@ public class EditCompanyService implements Service {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         int companyID = Integer.parseInt(req.getParameter(COMPANY_ID_PARAMETER));
-        System.out.println("companyID: "+companyID);
-        Company company = new Company();
+        Company company;
         CompanyDAO companyDAO = new CompanyDAO();
         String name_ru = req.getParameter(NAME_RU_PARAMETER);
         String name_kz = req.getParameter(NAME_KZ_PARAMETER);

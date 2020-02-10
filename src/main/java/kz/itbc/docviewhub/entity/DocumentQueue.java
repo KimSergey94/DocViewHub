@@ -3,43 +3,21 @@ package kz.itbc.docviewhub.entity;
 import java.sql.Timestamp;
 
 public class DocumentQueue {
-    private int id_DocumentQueue;
+    private long id_DocumentQueue;
     private Company senderCompany;
     private Company recipientCompany;
     private String jsonData;
     private Timestamp receiveDate;
     private Timestamp sendDate;
     private DocumentStatus documentStatus;
-    private int id_ClientDocumentQueue;
+    private long id_ClientDocumentQueue;
     private boolean flagDeleted;
     private String aes;
 
-    public String getAes() {
-        return aes;
-    }
+    public DocumentQueue(){}
 
-    public void setAes(String aes) {
-        this.aes = aes;
-    }
-
-    public boolean isFlagDeleted() {
-        return flagDeleted;
-    }
-
-    public void setFlagDeleted(boolean flagDeleted) {
-        this.flagDeleted = flagDeleted;
-    }
-
-    public int getId_ClientDocumentQueue() {
-        return id_ClientDocumentQueue;
-    }
-
-    public void setId_ClientDocumentQueue(int id_ClientDocumentQueue) {
-        this.id_ClientDocumentQueue = id_ClientDocumentQueue;
-    }
-
-    public DocumentQueue(int id_DocumentQueue, Company senderCompany, Company recipientCompany, String jsonData,
-                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus, int id_ClientDocumentQueue,
+    public DocumentQueue(long id_DocumentQueue, Company senderCompany, Company recipientCompany, String jsonData,
+                         Timestamp receiveDate, Timestamp sendDate, DocumentStatus documentStatus, long id_ClientDocumentQueue,
                          boolean flagDeleted, String aes){
         this.id_DocumentQueue = id_DocumentQueue;
         this.setSenderCompany(senderCompany);
@@ -52,13 +30,36 @@ public class DocumentQueue {
         this.flagDeleted = flagDeleted;
         this.aes = aes;
     }
-    public DocumentQueue(){}
 
-    public int getId_DocumentQueue() {
+    public long getId_ClientDocumentQueue() {
+        return id_ClientDocumentQueue;
+    }
+
+    public void setId_ClientDocumentQueue(long id_ClientDocumentQueue) {
+        this.id_ClientDocumentQueue = id_ClientDocumentQueue;
+    }
+
+    public boolean isFlagDeleted() {
+        return flagDeleted;
+    }
+
+    public void setFlagDeleted(boolean flagDeleted) {
+        this.flagDeleted = flagDeleted;
+    }
+
+    public String getAes() {
+        return aes;
+    }
+
+    public void setAes(String aes) {
+        this.aes = aes;
+    }
+
+    public long getId_DocumentQueue() {
         return id_DocumentQueue;
     }
 
-    public void setId_DocumentQueue(int id_DocumentQueue) {
+    public void setId_DocumentQueue(long id_DocumentQueue) {
         this.id_DocumentQueue = id_DocumentQueue;
     }
 

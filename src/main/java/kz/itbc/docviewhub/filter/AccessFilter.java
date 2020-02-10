@@ -1,7 +1,6 @@
 package kz.itbc.docviewhub.filter;
 
 import kz.itbc.docviewhub.entity.User;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpFilter;
@@ -9,13 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
 import static kz.itbc.docviewhub.constant.AppConstant.*;
 
 public class AccessFilter extends HttpFilter {
     private final String[] extensions = {".ico", ".gif", ".css", ".js", ".ttf", ".woff", ".woff2", ".svg", ".eot",
             ".jpg", ".png"};
-    //private final String[] links = {"/senddocument", "/register", "/companies"};
 
     private boolean isExtensions(HttpServletRequest request) {
         String context = request.getContextPath();
@@ -41,7 +38,6 @@ public class AccessFilter extends HttpFilter {
                 filterLoginPage(req, res, chain);
             } else if (reqURI.contains(RECEIVE_DOCUMENT_PAGE_URI) || reqURI.contains(REGISTRATION_PAGE_URI) ||
                     reqURI.contains(COMPANIES_PAGE_URI)) {
-                System.out.println("Testing: reqURI: "+reqURI+", "+reqURI.contains(TEST_PAGE_URI));
                 chain.doFilter(req, res);
             } else {
                 filterAllPages(req, res, chain);
